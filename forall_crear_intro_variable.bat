@@ -24,7 +24,7 @@ echo %message%
 if not exist "%~dp0\temp" mkdir "%~dp0\temp"
 if not exist "%~dp0\fix_procesado" mkdir "%~dp0\fix_procesado"
 
-for %%a in ("*.mp4", "*.mpg", "*.wmv") do (
+for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.mkv") do (
 	
 	:: para nombres con !
 	set "fname=%%a"

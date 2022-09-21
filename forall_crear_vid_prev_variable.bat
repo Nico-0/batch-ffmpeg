@@ -11,7 +11,7 @@
 if not exist "%~dp0\temp" mkdir "%~dp0\temp"
 if not exist "%~dp0\fix_intro_vid" mkdir "%~dp0\fix_intro_vid"
 
-for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.avi") do (
+for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.avi", "*.mkv") do (
 	echo se procesa el video %%a
 	if exist "%~dp0\temp\%%a_vid.txt" del "%~dp0\temp\%%a_vid.txt"
 	

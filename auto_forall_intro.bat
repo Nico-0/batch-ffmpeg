@@ -9,6 +9,8 @@ set /a primero = 15
 set /a numerador = 90
 set /a denominador = 100
 
+set "append="
+
 ::reencodear los cuts evita problemas de duracion, que tienen que ser exactas para la grilla
 set "reencode=si"
 
@@ -16,9 +18,9 @@ if "%reencode%"=="no" (
 set "copy=-c copy")
 
 if not exist "%~dp0\temp" mkdir "%~dp0\temp"
-if not exist "%~dp0\fix_auto" mkdir "%~dp0\fix_auto"
+if not exist "%~dp0\fix_auto%append%" mkdir "%~dp0\fix_auto%append%"
 
-for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv") do (
+for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv", "*.webm") do (
 	echo se procesa el video %%a
 	if exist "%~dp0\temp\%%a_grillas.txt" del "%~dp0\temp\%%a_grillas.txt"
 	
@@ -60,6 +62,8 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv") do (
 	set "codec=-c:v libx264")
 	if "!codec_name!"=="wmv2" (
 	set "codec=-c:v wmv2")
+	if "!codec_name!"=="vp9" (
+	set "codec=-c:v libvpx-vp9 -strict -2")
 	
 	if "!codec!"=="" (
 	echo falta setear codec (si no existe probar sin reencode, pero la grilla igual reencodea)
@@ -138,12 +142,12 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv") do (
 	echo file '!ffname!' >> "temp/!fname!_grillas.txt"
 	
 	::realizar el concat
-	ffmpeg -safe 0 -f concat -i "%~dp0\temp\!fname!_grillas.txt" -c copy -dn "%~dp0\fix_auto\!name! - fix!ext!"
+	ffmpeg -safe 0 -f concat -i "%~dp0\temp\!fname!_grillas.txt" -c copy -dn "%~dp0\fix_auto!append!\!name! - fix!ext!"
 	
 	
 	
 	:: arreglar caracteres para que los lea el string powershell de tipo ''
-	set "path_mod=%~dp0\fix_auto\!name! - fix!ext!"
+	set "path_mod=%~dp0\fix_auto!append!\!name! - fix!ext!"
 	set "path_mod=!path_mod:'=''!"
 	set "path_mod=!path_mod:[=``[!"
 	set "path_mod=!path_mod:]=``]!"
@@ -159,7 +163,7 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv") do (
 	endlocal
 )
 
-echo Directorio: "%~dp0\fix_auto"
+echo Directorio: "%~dp0\fix_auto%append%"
 echo/
 echo end
 @pause

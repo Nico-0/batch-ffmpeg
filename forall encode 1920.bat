@@ -1,6 +1,6 @@
 @echo off
 
-set "preset=fast"
+set "preset=veryfast"
 set "crf=15"
 set "audio=-c:a copy"
 
@@ -11,7 +11,7 @@ set "audio=-c:a aac")
 
 if not exist "%~dp0\1920encode" mkdir "%~dp0\1920encode"
 
-for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.avi") do (
+for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.avi", "*.mkv", "*.3gp") do (
 	setlocal enableDelayedExpansion
 		
 	::obtener ancho
