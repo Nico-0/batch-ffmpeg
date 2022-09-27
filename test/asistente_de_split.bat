@@ -1,4 +1,5 @@
 :: al usar -ss antes de -i, el corte se aproxima mas al keyframe cercano
+:: reemplazado por https://github.com/mifi/lossless-cut
 
 @echo off
 echo Archivo abierto:
