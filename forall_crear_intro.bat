@@ -1,12 +1,12 @@
 @echo on
 
-:: crea una intro al video con las 3 imagenes dadas
+:: crea una intro al video con las 3 imagenes dadas (crear manualmente)
 :: para todos los videos de la carpeta
 :: las imagenes se deben llamar: video.mp4.png, video.mp4_1.png, video.mp4_2.png
 :: mantiene la fecha de modificacion de los videos originales
 :: primero se crea un video a partir de cada imagen en la carpeta /temp
 :: segundo se juntan los 3 sumado al original en una operacion
-:: se debe crear previamente la carpeta temp
+
 
 set /a dur1 = 2
 set /a dur2 = 2
@@ -58,25 +58,25 @@ for %%a in ("*.mp4", "*.mpg") do (
 	echo !img3!
 	
 	:: nombres de videos a escribir
-	set "vid1=temp/%%~na_0%%~xa"
-	set "vid2=temp/%%~na_1%%~xa"
-	set "vid3=temp/%%~na_2%%~xa"
+	set "vid1=%%~na_0%%~xa"
+	set "vid2=%%~na_1%%~xa"
+	set "vid3=%%~na_2%%~xa"
 	
 	:: crear video con cada imagen
 	ffmpeg -framerate !frame_rate! -loop 1 -i "!img1!" -f lavfi -i anullsrc=channel_layout=!channel!:sample_rate=!sample_rate! -t !dur1!^
-	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur1! -video_track_timescale !time_base! "!vid1!"
+	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur1! -video_track_timescale !time_base! "temp/!vid1!"
 
 	ffmpeg -framerate !frame_rate! -loop 1 -i "!img2!" -f lavfi -i anullsrc=channel_layout=!channel!:sample_rate=!sample_rate! -t !dur2!^
-	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur2! -video_track_timescale !time_base! "!vid2!"
+	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur2! -video_track_timescale !time_base! "temp/!vid2!"
 	 
 	ffmpeg -framerate !frame_rate! -loop 1 -i "!img3!" -f lavfi -i anullsrc=channel_layout=!channel!:sample_rate=!sample_rate! -t !dur3!^
-	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur3! -video_track_timescale !time_base! "!vid3!"
+	 -c:v !codec! -pix_fmt !pix_fmt! -t !dur3! -video_track_timescale !time_base! "temp/!vid3!"
 	 
 	::crear txt con videos
 	echo file '!vid1!' >> "temp/%%a.txt"
 	echo file '!vid2!' >> "temp/%%a.txt"
 	echo file '!vid3!' >> "temp/%%a.txt"
-	echo file '%%a' >> "temp/%%a.txt"
+	echo file '..\%%a' >> "temp/%%a.txt"
 	
 	:: crear video final
 	ffmpeg -safe 0 -f concat -i "%~dp0\temp\%%a.txt" -c copy "%~dp0\fix_procesado\%%~na - fix%%~xa"

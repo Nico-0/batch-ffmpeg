@@ -8,6 +8,7 @@ set /a cantidad = 4
 set /a numerador = 9
 set /a denominador = 10
 
+if not exist "%~dp0\tempFrames" mkdir "%~dp0\tempFrames"
 for %%a in ("*.mp4") do (
 	echo se procesa el video %%a
 	
@@ -30,8 +31,8 @@ for %%a in ("*.mp4") do (
 		set /a actual = %%x
 		
 		IF !actual! LSS 10 (
-		ffmpeg -ss !current! -i "!fullname!" -vframes 1 "!fullname!_0%%x.png") else (
-		ffmpeg -ss !current! -i "!fullname!" -vframes 1 "!fullname!_%%x.png")
+		ffmpeg -ss !current! -i "!fullname!" -vframes 1 "tempFrames/!fullname!_0%%x.png") else (
+		ffmpeg -ss !current! -i "!fullname!" -vframes 1 "tempFrames/!fullname!_%%x.png")
 
 	)
 	endlocal

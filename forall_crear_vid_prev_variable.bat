@@ -1,8 +1,8 @@
 @echo on
 
-:: crea una intro al video con los videos preview que haya en la carpeta
+:: crea una intro al video con los videos preview que haya en la carpeta prevs
 :: para todos los videos de la carpeta
-:: los videos se encuentran de la forma: nombrevideo-wildcard-.ext
+:: los videos se encuentran de la forma: nombrevideo-wildcard-.ext (crear con forall_extraer_vid_prev o given)
 :: mantiene la fecha de modificacion de los videos originales
 :: se puede poner un unico video de 5 seg, pero si hay varios en la carpeta los toma todos en orden
 :: powershell nombres no pueden tener doble espacio, ni parentesis ni corchetes
@@ -38,11 +38,11 @@ for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.avi", "*.mkv") do (
 		
 		set /a "contador = contador + 1"
 		
-		echo file '!nv!' >> "temp/!fname!_vid.txt"
+		echo file '..\!nv!' >> "temp/!fname!_vid.txt"
 		setlocal DisableDelayedExpansion
 	)
 	setlocal enableDelayedExpansion
-	echo file '!a!' >> "temp/!fname!_vid.txt"
+	echo file '..\!a!' >> "temp/!fname!_vid.txt"
 	
 	echo contador: !contador! videos tomados
 	

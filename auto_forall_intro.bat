@@ -12,17 +12,18 @@ set /a denominador = 100
 set "append="
 
 ::reencodear los cuts evita problemas de duracion, que tienen que ser exactas para la grilla
-set "reencode=si"
+set "reencode=no"
 
 if "%reencode%"=="no" (
 set "copy=-c copy")
 
-if not exist "%~dp0\temp" mkdir "%~dp0\temp"
+if not exist "%~dp0\tempf" mkdir "%~dp0\tempf"
+if not exist "%~dp0\tempGrillf" mkdir "%~dp0\tempGrillf"
 if not exist "%~dp0\fix_auto%append%" mkdir "%~dp0\fix_auto%append%"
 
 for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv", "*.webm") do (
 	echo se procesa el video %%a
-	if exist "%~dp0\temp\%%a_grillas.txt" del "%~dp0\temp\%%a_grillas.txt"
+	if exist "%~dp0\tempf\%%a_grillas.txt" del "%~dp0\tempf\%%a_grillas.txt"
 	
 	:: nombre fuera de delayedExpansion para que funcionen filenames con !
 	set "fname=%%a"
@@ -114,8 +115,8 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv", "*.webm") do (
 	for /l %%x in (1,1,8) do (
 		echo preview %%x en instante: !current!
 
-		set "ruta=temp\!name!_prev_%%x!ext!"
-		ffmpeg -ss !current! -i "!fname!" !codec! -pix_fmt !format! -t !dura! -video_track_timescale !time_base! ^
+		set "ruta=tempf\!name!_prev_%%x!ext!"
+		ffmpeg -n -ss !current! -i "!fname!" !codec! -pix_fmt !format! -t !dura! -video_track_timescale !time_base! ^
 		!stream_order! -c:a !codec_audio! !copy! "!ruta!"
 		set "ruta[%%x]=!ruta!"
 		echo ruta[%%x] vale: !ruta[%%x]!
@@ -123,9 +124,9 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv", "*.webm") do (
 		set /a current = current + intervalo
 	)
 	
-	::Crear ambas grillas. Es el segundo reencode pero es como el primero porque se achican 1/4
-	set "grilla1=temp\!name!_grilla1!ext!"
-	set "grilla2=temp\!name!_grilla2!ext!"
+	::Crear ambas grillas. Es el segundo reencode pero igual se achican de tamaño 1/4
+	set "grilla1=tempGrillf\!name!_grilla1!ext!"
+	set "grilla2=tempGrillf\!name!_grilla2!ext!"
 	
 	ffmpeg -i "!ruta[1]!" -i "!ruta[2]!" -i "!ruta[3]!" -i "!ruta[4]!" ^
 	-filter_complex "[0:v][1:v]hstack[top];[2:v][3:v]hstack[bottom];[top][bottom]vstack,format=!format!,scale=!ancho!x!alto![v];[0:a][1:a][2:a][3:a]amerge=inputs=4[a]" ^
@@ -137,14 +138,14 @@ for %%a in ("*.mp4", "*.wmv", "*.avi", "*mpg", "*.mkv", "*.webm") do (
 	
 	
 	:: agregar nombres de videos a leer al txt
-	echo file '!grilla1!' >> "temp/!fname!_grillas.txt"
-	echo file '!grilla2!' >> "temp/!fname!_grillas.txt"
-	echo file '!ffname!' >> "temp/!fname!_grillas.txt"
+	echo file '..\!grilla1!' >> "tempf/!fname!_grillas.txt"
+	echo file '..\!grilla2!' >> "tempf/!fname!_grillas.txt"
+	echo file '..\!ffname!' >> "tempf/!fname!_grillas.txt"
+	
 	
 	::realizar el concat
-	ffmpeg -safe 0 -f concat -i "%~dp0\temp\!fname!_grillas.txt" -c copy -dn "%~dp0\fix_auto!append!\!name! - fix!ext!"
-	
-	
+	ffmpeg -safe 0 -f concat -i "%~dp0tempf\!fname!_grillas.txt" -c copy -dn "%~dp0\fix_auto!append!\!name! - fix!ext!"
+
 	
 	:: arreglar caracteres para que los lea el string powershell de tipo ''
 	set "path_mod=%~dp0\fix_auto!append!\!name! - fix!ext!"

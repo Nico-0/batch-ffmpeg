@@ -2,7 +2,7 @@
 
 :: crea una intro al video con las x cantidad de imagenes que haya, 1 seg cada una
 :: para todos los videos de la carpeta
-:: las imagenes se encuentran de la forma: nombrevideo-wildcard-.png
+:: las imagenes se encuentran de la forma: nombrevideo-wildcard-.png  (crear con forall_extraer_frames.bat y mover de directorio)
 :: adentro de un vector se va guardando cada nombre de imagen, y se tiene un contador que se incrementa con cada una
 :: mantiene la fecha de modificacion de los videos originales
 :: primero se crea un video a partir de cada imagen en la carpeta /temp
@@ -95,11 +95,11 @@ for %%a in ("*.mp4", "*.mpg", "*.wmv", "*.mkv") do (
 		ffmpeg -framerate !frame_rate! -loop 1 -i "!mname!" -f lavfi -i anullsrc=channel_layout=!channel!:sample_rate=!sample_rate! -t !dura!^
 		 -c:v !codec! -pix_fmt !pix_fmt! -t !dura! -video_track_timescale !time_base! !stream_order! "temp/!name!_!contador!%%~xa"
 
-		echo file 'temp/!na!_!contador!%%~xa' >> "temp/!fname!.txt"
+		echo file '!na!_!contador!%%~xa' >> "temp/!fname!.txt"
 		setlocal DisableDelayedExpansion
 	)
 	setlocal enableDelayedExpansion
-	echo file '!a!' >> "temp/!fname!.txt"
+	echo file '..\!a!' >> "temp/!fname!.txt"
 	
 	echo contador: !contador!
 	

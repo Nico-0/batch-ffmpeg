@@ -1,4 +1,5 @@
 @echo off
+:: todo ignorar videos que ya sean de resolucion mayor o igual
 
 set "preset=veryfast"
 set "crf=15"
